@@ -36,6 +36,9 @@ static double MaxBytesForLevel(unsigned level, const Options* options_) {
                                  2097152 * 1048576.0};
   return bytes[level];
   */
+  // https://github.com/EighteenZi/rocksdb_wiki/blob/master/RocksDB-Tuning-Guide.md
+  /* L0->L1 compaction is also single-threaded. It is hard to achieve good throughput with single-threaded compaction. To see if this is causing issues, check disk utilization. If disk is not fully utilized, there might be an issue with compaction configuration. We usually reommend making L0->L1 as fast as possible by making the size of level 0 similar to size of level 1.
+   */
   if (level > 0) {
     return options_->max_bytes_for_level_base * std::pow(options_->max_bytes_for_level_multiplier, level - 1);
   }
