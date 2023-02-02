@@ -30,6 +30,7 @@ AM_CPPFLAGS = -I${abs_top_srcdir}/include
 AM_CFLAGS = -DLEVELDB_PLATFORM_POSIX $(SNAPPY_FLAGS) ${EXTRA_CFLAGS} $(WANAL_CFLAGS)
 AM_CXXFLAGS = -DLEVELDB_PLATFORM_POSIX $(SNAPPY_FLAGS) ${EXTRA_CFLAGS} $(WANAL_CXXFLAGS) -Wno-variadic-macros
 AM_MAKEFLAGS = --no-print-directory
+AM_LDFLAGS = -lsnappy
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libhyperleveldb.pc
