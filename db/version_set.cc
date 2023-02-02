@@ -20,6 +20,7 @@
 #include "table/two_level_iterator.h"
 #include "util/coding.h"
 #include "util/logging.h"
+#include <cmath>
 
 namespace leveldb {
 
