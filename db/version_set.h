@@ -391,7 +391,7 @@ class Compaction {
   Compaction(const Compaction&);
   Compaction& operator = (const Compaction&);
 
-  explicit Compaction(unsigned level);
+  explicit Compaction(unsigned level, uint64_t max_output_file_size);
 
   unsigned level_;
   uint64_t min_output_file_size_;

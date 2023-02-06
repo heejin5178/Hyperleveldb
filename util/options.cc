@@ -21,9 +21,14 @@ Options::Options()
       block_cache(NULL),
       block_size(4096),
       block_restart_interval(16),
-      compression(kSnappyCompression),
+      compression(kNoCompression),
       filter_policy(NULL),
-      manual_garbage_collection(false) {
+      manual_garbage_collection(false),
+      level0_slowdown_writes_trigger(8),
+      level0_stop_writes_trigger(12),
+      max_bytes_for_level_base(64<<20),
+      max_bytes_for_level_multiplier(2),
+      target_file_size_base(64<<20) { 
 }
 
 

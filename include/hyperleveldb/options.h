@@ -155,14 +155,14 @@ struct Options {
   // Default: 20
   //
   // Dynamically changeable through SetOptions() API
-  int level0_slowdown_writes_trigger = 20;
+  int level0_slowdown_writes_trigger;
 
   // Maximum number of level-0 files.  We stop writes at this point.
   //
   // Default: 36
   //
   // Dynamically changeable through SetOptions() API
-  int level0_stop_writes_trigger = 36;
+  int level0_stop_writes_trigger;
 
     // Control maximum total data size for a level.
   // max_bytes_for_level_base is the max total for level-1.
@@ -176,12 +176,12 @@ struct Options {
   // Default: 256MB.
   //
   // Dynamically changeable through SetOptions() API
-  uint64_t max_bytes_for_level_base = 256 * 1048576;
+  uint64_t max_bytes_for_level_base;
 
   // Default: 10.
   //
   // Dynamically changeable through SetOptions() API
-  double max_bytes_for_level_multiplier = 10;
+  double max_bytes_for_level_multiplier;
 
   // Target file size for compaction.
   // target_file_size_base is per-file size for level-1.
@@ -195,7 +195,7 @@ struct Options {
   // Default: 64MB.
   //
   // Dynamically changeable through SetOptions() API
-  uint64_t target_file_size_base = 64 * 1048576;
+  uint64_t target_file_size_base;
   // Create an Options object with default values for all fields.
   Options();
 };

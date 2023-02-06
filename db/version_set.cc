@@ -43,7 +43,7 @@ static double MaxBytesForLevel(unsigned level, const Options* options_) {
     return options_->max_bytes_for_level_base * std::pow(options_->max_bytes_for_level_multiplier, level - 1);
   }
   else {
-    return options_->max_bytes_for_level_base;
+    return static_cast<double>(options_->max_bytes_for_level_base);
   }
 }
 
@@ -1432,7 +1432,7 @@ Compaction* VersionSet::PickCompaction(Version* v, unsigned level) {
     return NULL;
   }
 
-  Compaction* c = new Compaction(level);
+  Compaction* c = new Compaction(level, MaxFileSizeForLevel(level, options_));
   c->input_version_ = v;
   c->input_version_->Ref();
 
@@ -1582,7 +1582,7 @@ Compaction* VersionSet::CompactRange(
     }
   }
 
-  Compaction* c = new Compaction(level);
+  Compaction* c = new Compaction(level, MaxFileSizeForLevel(level, options_));
   c->input_version_ = current_;
   c->input_version_->Ref();
   c->inputs_[0] = inputs;
@@ -1590,10 +1590,10 @@ Compaction* VersionSet::CompactRange(
   return c;
 }
 
-Compaction::Compaction(unsigned l)
+Compaction::Compaction(unsigned l, uint64_t max_output_file_size)
     : level_(l),
       min_output_file_size_(MinFileSizeForLevel(l)),
-      max_output_file_size_(MaxFileSizeForLevel(l, input_version_->vset_->options_)),
+      max_output_file_size_(max_output_file_size),
       input_version_(NULL),
       edit_(),
       boundaries_() {
