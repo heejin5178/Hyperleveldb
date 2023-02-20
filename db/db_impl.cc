@@ -127,6 +127,17 @@ struct DBImpl::CompactionState {
         builder(NULL),
         total_bytes(0) {
   }
+
+  double CalculateWAF(void) {
+     size_t total_upper_input_file_size = compaction->GetInputSize(0);
+     size_t total_output_file_size = 0;
+     for (int i = 0; i < outputs.size(); i++) {
+       total_output_file_size += outputs[i].file_size;
+     }
+     return static_cast<double>(total_output_file_size) / 
+       static_cast<double>(total_upper_input_file_size);
+ }
+
  private:
   CompactionState(const CompactionState&);
   CompactionState& operator = (const CompactionState&);
@@ -207,7 +218,9 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
       backup_waiters_(0),
       backup_waiter_has_it_(false),
       backup_deferred_delete_(),
-      bg_error_() {
+      bg_error_(),
+      comp_num(0),
+      total_waf(0) {
   mutex_.Lock();
   mem_->Ref();
   has_imm_.Release_Store(NULL);
@@ -245,6 +258,8 @@ DBImpl::~DBImpl() {
     env_->UnlockFile(db_lock_);
   }
 
+  // for debug
+  Log(options_.info_log, "WAF: %lf, %lf", total_waf, total_waf / comp_num);
   delete versions_;
   if (mem_ != NULL) mem_->Unref();
   if (imm_ != NULL) imm_->Unref();
@@ -1001,6 +1016,8 @@ Status DBImpl::InstallCompactionResults(CompactionState* compact) {
       compact->compaction->level() + 1,
       static_cast<long long>(compact->total_bytes));
 
+  comp_num++;
+	total_waf += compact->CalculateWAF();
   // Add compaction outputs
   compact->compaction->AddInputDeletions(compact->compaction->edit());
   const int level = compact->compaction->level();

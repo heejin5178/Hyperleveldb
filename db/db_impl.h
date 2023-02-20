@@ -90,6 +90,9 @@ class DBImpl : public DB {
   // REQURES: mutex_ not held
   SequenceNumber LastSequence();
 
+  double total_waf;
+  double comp_num;
+
  private:
   friend class DB;
   struct CompactionState;

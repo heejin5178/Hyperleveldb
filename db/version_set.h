@@ -385,6 +385,8 @@ class Compaction {
   // is successful.
   void ReleaseInputs();
 
+  size_t GetInputSize(int which);
+
  private:
   friend class Version;
   friend class VersionSet;

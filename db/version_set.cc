@@ -1683,4 +1683,13 @@ void Compaction::ReleaseInputs() {
   }
 }
 
+size_t Compaction::GetInputSize(int which) {
+   assert(which == 0);
+   size_t total_input_size = 0;
+   for (int i = 0; i < inputs_[which].size(); i++) {
+     total_input_size += inputs_[which][i]->file_size;
+   }
+   return total_input_size;
+}
+
 }  // namespace leveldb
