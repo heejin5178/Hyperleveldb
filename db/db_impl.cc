@@ -229,6 +229,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
   env_->StartThread(&DBImpl::CompactLevelWrapper, this);
   num_bg_threads_ = 2;
 
+  Log(options_.info_log, "Hyperleveldb Running..");
   // Reserve ten files or so for other uses and give the rest to TableCache.
   const int table_cache_size = options_.max_open_files - kNumNonTableCacheFiles;
   table_cache_ = new TableCache(dbname_, &options_, table_cache_size);
@@ -1017,7 +1018,7 @@ Status DBImpl::InstallCompactionResults(CompactionState* compact) {
       static_cast<long long>(compact->total_bytes));
 
   comp_num++;
-	total_waf += compact->CalculateWAF();
+  total_waf += compact->CalculateWAF();
   // Add compaction outputs
   compact->compaction->AddInputDeletions(compact->compaction->edit());
   const int level = compact->compaction->level();
