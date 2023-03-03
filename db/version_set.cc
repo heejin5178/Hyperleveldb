@@ -26,7 +26,6 @@ namespace leveldb {
 
 static double MaxBytesForLevel(unsigned level, const Options* options_) {
   assert(level < leveldb::config::kNumLevels);
-  /*
   static const double bytes[] = {64 * 1048576.0,
                                  128 * 1048576.0,
                                  512 * 1048576.0,
@@ -35,16 +34,6 @@ static double MaxBytesForLevel(unsigned level, const Options* options_) {
                                  262144 * 1048576.0,
                                  2097152 * 1048576.0};
   return bytes[level];
-  */
-  // https://github.com/EighteenZi/rocksdb_wiki/blob/master/RocksDB-Tuning-Guide.md
-  /* L0->L1 compaction is also single-threaded. It is hard to achieve good throughput with single-threaded compaction. To see if this is causing issues, check disk utilization. If disk is not fully utilized, there might be an issue with compaction configuration. We usually reommend making L0->L1 as fast as possible by making the size of level 0 similar to size of level 1.
-   */
-  if (level > 0) {
-    return options_->max_bytes_for_level_base * std::pow(options_->max_bytes_for_level_multiplier, level - 1);
-  }
-  else {
-    return static_cast<double>(options_->max_bytes_for_level_base);
-  }
 }
 
 static uint64_t MinFileSizeForLevel(unsigned level) {
@@ -61,7 +50,6 @@ static uint64_t MinFileSizeForLevel(unsigned level) {
 
 static uint64_t MaxFileSizeForLevel(unsigned level, const Options* options_) {
   assert(level < leveldb::config::kNumLevels);
-  /*
   static const uint64_t bytes[] = {64 * 1048576,
                                    64 * 1048576,
                                    32 * 1048576,
@@ -70,8 +58,6 @@ static uint64_t MaxFileSizeForLevel(unsigned level, const Options* options_) {
                                    32 * 1048576,
                                    64 * 1048576};
   return bytes[level];
-  */
-  return options_->target_file_size_base;
 }
 
 static uint64_t MaxCompactionBytesForLevel(unsigned level, const Options* options_) {
