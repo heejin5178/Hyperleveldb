@@ -47,7 +47,7 @@ static double MaxBytesForLevel(unsigned level, const Options* options_) {
   }
 }
 
-static uint64_t MinFileSizeForLevel(unsigned level) {
+static uint64_t MinFileSizeForLevel(unsigned level, const Options* options_) {
   assert(level < leveldb::config::kNumLevels);
   static const uint64_t bytes[] = {1 * 1048576,
                                    1 * 1048576,
@@ -1128,7 +1128,7 @@ void VersionSet::Finalize(Version* v) {
       const uint64_t max_bytes = MaxBytesForLevel(level, options_);
       double score1 = static_cast<double>(level_bytes) / max_bytes;
       const uint64_t avg_file_sz = (MaxFileSizeForLevel(level, options_) +
-                                    MinFileSizeForLevel(level)) >> 1;
+                                    MinFileSizeForLevel(level, options_)) >> 1;
       double score2 = static_cast<double>(v->files_[level].size()) / (max_bytes / avg_file_sz);
       score = std::max(score1, score2);
     }
@@ -1433,7 +1433,7 @@ Compaction* VersionSet::PickCompaction(Version* v, unsigned level) {
     return NULL;
   }
 
-  Compaction* c = new Compaction(level, MaxFileSizeForLevel(level, options_));
+  Compaction* c = new Compaction(level, options_);
   c->input_version_ = v;
   c->input_version_->Ref();
 
@@ -1583,7 +1583,7 @@ Compaction* VersionSet::CompactRange(
     }
   }
 
-  Compaction* c = new Compaction(level, MaxFileSizeForLevel(level, options_));
+  Compaction* c = new Compaction(level, options_);
   c->input_version_ = current_;
   c->input_version_->Ref();
   c->inputs_[0] = inputs;
@@ -1591,10 +1591,10 @@ Compaction* VersionSet::CompactRange(
   return c;
 }
 
-Compaction::Compaction(unsigned l, uint64_t max_output_file_size)
+Compaction::Compaction(unsigned l, const Options* options_)
     : level_(l),
-      min_output_file_size_(MinFileSizeForLevel(l)),
-      max_output_file_size_(max_output_file_size),
+      min_output_file_size_(MinFileSizeForLevel(l, options_)),
+      max_output_file_size_(MaxFileSizeForLevel(l, options_)),
       input_version_(NULL),
       edit_(),
       boundaries_() {
