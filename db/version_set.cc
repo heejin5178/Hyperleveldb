@@ -56,7 +56,8 @@ static uint64_t MinFileSizeForLevel(unsigned level) {
                                    8 * 1048576,
                                    16 * 1048576,
                                    32 * 1048576};
-  return bytes[level];
+  // return bytes[level];
+  return options_->target_file_size_base;
 }
 
 static uint64_t MaxFileSizeForLevel(unsigned level, const Options* options_) {
