@@ -245,6 +245,7 @@ DBImpl::DBImpl(const Options& raw_options, const std::string& dbname)
 }
 
 DBImpl::~DBImpl() {
+  Log(options_.info_log, "Total WAF: %lf, average WAF: %lf", total_waf, total_waf / comp_num);
   // Wait for background work to finish
   mutex_.Lock();
   shutting_down_.Release_Store(this);  // Any non-NULL value is ok
